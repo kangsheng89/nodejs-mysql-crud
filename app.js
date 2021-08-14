@@ -15,7 +15,7 @@ var myConnection  = require('express-myconnection')
 var dbOptions = {
 	host:	  process.env.DB_HOST,
 	user: 	  process.env.DB_USER,
-	password: process.env.DB_PASSWORD,
+	password: process.env.DB_PASS,
 	port: 	  process.env.DB_PORT, 
 	database: process.env.DB_NAME
 }
@@ -26,7 +26,7 @@ var dbOptions = {
  * request: Creates new connection per new request. Connection is auto close when response ends.
  */ 
 app.use(myConnection(mysql, dbOptions, 'pool'))
-app.get('/healthcheck', (req, res) => {
+/* app.get('/healthcheck', (req, res) => {
 	req.getConnection(function(error, conn) {
 		try {
 			conn.query('SHOW GLOBAL VARIABLES LIKE ‘max_connections’;', function(err, rows) {
@@ -43,7 +43,7 @@ app.get('/healthcheck', (req, res) => {
 			res.json(err.message)
 		}
 	})
-})
+}) */
 
 /**
  * setting up the templating view engine
