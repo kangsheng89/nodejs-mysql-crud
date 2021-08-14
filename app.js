@@ -1,6 +1,6 @@
+require('dotenv').config()
 var express = require('express')
 var app = express()
-
 var mysql = require('mysql')
 
 /**
@@ -12,13 +12,12 @@ var myConnection  = require('express-myconnection')
  * Store database credentials in a separate config.js file
  * Load the file/module and its values
  */ 
-var config = require('./config')
 var dbOptions = {
-	host:	  config.database.host,
-	user: 	  config.database.user,
-	password: config.database.password,
-	port: 	  config.database.port, 
-	database: config.database.db
+	host:	  process.env.DB_HOST,
+	user: 	  process.env.DB_USER,
+	password: process.env.DB_PASSWORD,
+	port: 	  process.env.DB_PORT, 
+	database: process.env.DB_NAME
 }
 /**
  * 3 strategies can be used
@@ -27,6 +26,24 @@ var dbOptions = {
  * request: Creates new connection per new request. Connection is auto close when response ends.
  */ 
 app.use(myConnection(mysql, dbOptions, 'pool'))
+app.get('/healthcheck', (req, res) => {
+	req.getConnection(function(error, conn) {
+		try {
+			conn.query('SHOW GLOBAL VARIABLES LIKE ‘max_connections’;', function(err, rows) {
+				//if(err) throw err
+				if (err) {
+					res.json(err)
+				} else {
+					// render to views/user/list.ejs template file
+					res.json('Healthy')
+				}
+			})
+		} catch(err) {
+			res.status(500)
+			res.json(err.message)
+		}
+	})
+})
 
 /**
  * setting up the templating view engine
@@ -108,7 +125,36 @@ app.use(flash())
 
 app.use('/', index)
 app.use('/users', users)
-
-app.listen(3000, function(){
-	console.log('Server running at port 3000: http://127.0.0.1:3000')
+const SERVER_PORT = process.env.SERVER_PORT || '3000'
+const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'http://127.0.0.1'
+app.listen(SERVER_PORT, function(){
+	console.log(`Server running at port ${SERVER_PORT}: ${SERVER_HOSTNAME}:${SERVER_PORT}`)
 })
+app.on('error', onError)
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      logger.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
