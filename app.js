@@ -26,10 +26,10 @@ var dbOptions = {
  * request: Creates new connection per new request. Connection is auto close when response ends.
  */ 
 app.use(myConnection(mysql, dbOptions, 'pool'))
-/* app.get('/healthcheck', (req, res) => {
+app.get('/healthcheck', (req, res) => {
 	req.getConnection(function(error, conn) {
 		try {
-			conn.query('SHOW GLOBAL VARIABLES LIKE ‘max_connections’;', function(err, rows) {
+			conn.query('SELECT @@global.read_only;', function(err, rows) {
 				//if(err) throw err
 				if (err) {
 					res.json(err)
@@ -43,7 +43,7 @@ app.use(myConnection(mysql, dbOptions, 'pool'))
 			res.json(err.message)
 		}
 	})
-}) */
+})
 
 /**
  * setting up the templating view engine
