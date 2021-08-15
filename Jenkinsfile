@@ -9,7 +9,7 @@ pipeline {
                     env
                     pwd
                     ls -la
-                    docker build . -t webapp
+                    docker build . -t webapp:${GIT_COMMIT:0:6}
                 '''
             }
             
