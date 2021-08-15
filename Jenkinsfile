@@ -10,10 +10,9 @@ pipeline {
                     pwd
                     ls -la
                     docker build . -t webapp
-                    docker tag webapp:${GIT_COMMIT} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT} 
-                    docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT} 
                 '''
             }
+            
 
             post {
                 // If Maven was able to run the tests, even if some of the test
@@ -23,5 +22,17 @@ pipeline {
                 }
             }
         }
+        stage('Tag Upload') {
+                
+            script {
+                    sh ''' 
+                        echo 'Upload...'
+                        docker tag webapp:$GIT_COMMIT public.ecr.aws/e8j9l0l6/webapp:$GIT_COMMIT
+                        docker push public.ecr.aws/e8j9l0l6/webapp:$GIT_COMMIT                             
+                    '''
+            }
+
+        }
+        
     }
 }
