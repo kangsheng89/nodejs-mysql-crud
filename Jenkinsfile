@@ -12,6 +12,8 @@ pipeline {
                     pwd
                     ls -la
                     docker build . -t webapp
+                    docker tag webapp:latest public.ecr.aws/e8j9l0l6/webapp:latest
+                    docker push public.ecr.aws/e8j9l0l6/webapp:latest
                 '''
             }
 
