@@ -125,7 +125,7 @@ app.use(flash())
 
 app.use('/', index)
 app.use('/users', users)
-const SERVER_PORT = process.env.SERVER_PORT || '3000'
+const SERVER_PORT = process.env.SERVER_PORT || '4000'
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'http://127.0.0.1'
 app.listen(SERVER_PORT, function(){
 	console.log(`Server running at port ${SERVER_PORT}: ${SERVER_HOSTNAME}:${SERVER_PORT}`)
