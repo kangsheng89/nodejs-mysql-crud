@@ -9,6 +9,7 @@ pipeline {
 
                 // Run Maven on a Unix agent.
                 sh ''' 
+                    env
                     pwd
                     ls -la
                     docker build . -t webapp
