@@ -27,8 +27,8 @@ pipeline {
                 script {
                         sh ''' 
                             echo 'Upload...'
-                            docker tag webapp:$GIT_COMMIT public.ecr.aws/e8j9l0l6/webapp:$GIT_COMMIT
-                            docker push public.ecr.aws/e8j9l0l6/webapp:$GIT_COMMIT                             
+                            docker tag webapp:${GIT_COMMIT:0:6} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT:0:6}
+                            docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT:0:6}                             
                         '''
                 }
             }
