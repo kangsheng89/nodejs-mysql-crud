@@ -4,17 +4,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Get some code from a GitHub repository
-                // git 'https://github.com/kangsheng89/nodejs-mysql-crud.git/'
-
-                // Run Maven on a Unix agent.
+                // Run docker on a Unix agent.
                 sh ''' 
                     env
                     pwd
                     ls -la
                     docker build . -t webapp
-                    docker tag webapp:latest public.ecr.aws/e8j9l0l6/webapp:latest
-                    docker push public.ecr.aws/e8j9l0l6/webapp:latest
+                    docker tag webapp:${GIT_COMMIT[0..7]} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT[0..7]} 
+                    docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT[0..7]} 
                 '''
             }
 
