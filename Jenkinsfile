@@ -10,8 +10,8 @@ pipeline {
                     pwd
                     ls -la
                     docker build . -t webapp
-                    docker tag webapp:${GIT_COMMIT[0..7]} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT[0..7]} 
-                    docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT[0..7]} 
+                    docker tag webapp:${GIT_COMMIT} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT} 
+                    docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT} 
                 '''
             }
 
