@@ -9,7 +9,11 @@ import sys
 commit = sys.argv[1]
 
 template_id = 'lt-0d2245566a36cbb20'
-client = boto3.client('ec2', region_name='us-east-1')
+auto_scalling_grp = 'myasg-2021081405143361730000000a'
+
+region = 'us-east-1'
+client = boto3.client('ec2', region_name=region)
+asg = boto3.client('autoscaling', region_name=region)
 
 def gen_code_from_template(version):
     template_path = '.'
@@ -50,6 +54,29 @@ def create_launch_tmp(source_version, data):
         
     return response
 
+def update_launch_tmp(source_version):   
+    response = client.modify_launch_template(
+        LaunchTemplateId=template_id,
+        DefaultVersion=str(source_version)
+    )
+    return response
+
+def update_asg(source_version): 
+    
+    response = asg.update_auto_scaling_group(
+        AutoScalingGroupName=auto_scalling_grp,
+        LaunchTemplate={
+            'LaunchTemplateId': template_id,
+            'Version': str(source_version)
+        }
+    )
+    return response
+
+def refresh_asg_instance(): 
+    response = asg.start_instance_refresh(
+        AutoScalingGroupName=auto_scalling_grp)
+    return response
+    
 
 #print (gen_code_from_template(commit))
 response = get_launch_template()
@@ -59,4 +86,9 @@ data = get_data(curr_tmp)
 data['UserData'] = gen_code_from_template(commit).decode("utf-8") 
 
 print(create_launch_tmp(version, data))
+print(update_launch_tmp(version+1))
+print(update_asg(version+1))
+print(refresh_asg_instance())
+
+
 
