@@ -29,8 +29,20 @@ pipeline {
                             echo 'Upload...'
                             docker tag webapp:${GIT_COMMIT:0:6} public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT:0:6}
                             docker push public.ecr.aws/e8j9l0l6/webapp:${GIT_COMMIT:0:6} 
-                            python3 deploy.py ${GIT_COMMIT:0:6}
                         '''
+                }
+            }
+        }
+        
+        stage ('Deploy'){
+            steps{
+                script {
+                    if (BRANCH_NAME ==~ /^release\/.+/) {
+                        echo "deploy"
+                        sh '''
+                            python3 deploy.py ${GIT_COMMIT:0:6} 
+                        '''
+                    }
                 }
             }
         }
