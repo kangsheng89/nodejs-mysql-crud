@@ -37,7 +37,7 @@ pipeline {
         stage ('Deploy'){
             steps{
                 script {
-                    if (BRANCH_NAME ==~ /^release\/.+/) {
+                    if (BRANCH_NAME ==~ /^release.+/) {
                         echo "deploy"
                         sh '''
                             python3 deploy.py ${GIT_COMMIT:0:6} 
